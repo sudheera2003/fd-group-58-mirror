@@ -33,7 +33,7 @@ import {
 import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
-// Update the props interface to include the dialog state control
+// update the props interface to include the dialog state control
 interface AddUserProps {
   setOpen: (open: boolean) => void;
   isOpen: boolean;
@@ -44,7 +44,7 @@ type RoleType = {
   name: string;
 };
 
-// Fixed schema
+// schema
 const formSchema = z.object({
   username: z.string().min(2, "Username must be at least 2 characters."),
   email: z.string().email("Invalid email address."),
@@ -52,7 +52,7 @@ const formSchema = z.object({
   role: z.string().min(1, "Please select a role"),
 });
 
-// Pass the setOpen prop from the parent AppSidebar
+// pass the setOpen prop from the parent AppSidebar
 export default function AddUser({ setOpen, isOpen }: AddUserProps) {
   const [roles, setRoles] = useState<RoleType[]>([]);
 
@@ -100,15 +100,13 @@ export default function AddUser({ setOpen, isOpen }: AddUserProps) {
       const data = await response.json();
 
       if (response.ok) {
-        // --- SUCCESS LOGIC ---
+        // success logic
         toast.success(data.message || "User registered successfully! 🎉");
-        form.reset(); // Reset form fields to default values
-        setOpen(false); // Close the dialog
-        // ---------------------
+        form.reset();
+        setOpen(false);
       } else {
-        // --- ERROR LOGIC ---
+        // error logic
         toast.error(data.message || "Registration failed. Check network.");
-        // -------------------
       }
     } catch (error) {
       console.error("API call error", error);
@@ -127,7 +125,7 @@ export default function AddUser({ setOpen, isOpen }: AddUserProps) {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          {/* Username Field */}
+          {/* username */}
           <FormField
             control={form.control}
             name="username"
@@ -142,7 +140,7 @@ export default function AddUser({ setOpen, isOpen }: AddUserProps) {
             )}
           />
 
-          {/* Email Field */}
+          {/* email */}
           <FormField
             control={form.control}
             name="email"
@@ -157,7 +155,7 @@ export default function AddUser({ setOpen, isOpen }: AddUserProps) {
             )}
           />
 
-          {/* Password Field */}
+          {/* password */}
           <FormField
             control={form.control}
             name="password"
@@ -196,7 +194,7 @@ export default function AddUser({ setOpen, isOpen }: AddUserProps) {
             )}
           />
 
-          {/* Role Selection Field */}
+          {/* role */}
           <FormField
             control={form.control}
             name="role"
@@ -215,7 +213,6 @@ export default function AddUser({ setOpen, isOpen }: AddUserProps) {
                   <SelectContent>
                     {roles.length > 0 ? (
                       roles.map((role) => (
-                        // CHANGE THIS: Use role._id as the value, not role.name
                         <SelectItem key={role._id} value={role._id}>
                           <span className="capitalize">{role.name}</span>
                         </SelectItem>

@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', 
+  baseURL: 'http://localhost:5000/api',
 });
 
-// 1. Request Interceptor: Add Token to every outgoing request
+// request interceptor: add token to every outgoing request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -15,22 +15,22 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
-// 2. Response Interceptor: Handle Session Expiry globally
+// response interceptor: handle session expiry globally
 api.interceptors.response.use(
-  (response) => response, 
+  (response) => response, // Return successful responses directly
   (error) => {
-    // Check if the error is a 401 (Unauthorized)
+    // Check if the error is a 401 (unauthorized)
     if (error.response && error.response.status === 401) {
       
-      // Prevent redirect loops if already on login page
+      // prevent redirect loops if already on login page
       if (window.location.pathname !== '/login') {
         console.warn("Session expired. Logging out...");
         
-        // Clear any stale data
+        // clear any stale data
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-
-        // Force redirect to login
+        
+        // force redirect to login
         window.location.href = '/login';
       }
     }

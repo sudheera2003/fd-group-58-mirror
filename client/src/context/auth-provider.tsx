@@ -17,7 +17,6 @@ export interface AuthContextType {
   isLoading: boolean;
 }
 
-// Export the Context object itself
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -30,24 +29,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (token && storedUser) {
       try {
-        // 1. Decode the token to find the expiration time
+        //decode the token to check expiry
         const decoded: any = jwtDecode(token);
         
-        // 2. Check if expired 
+        //check if expired
         const currentTime = Date.now() / 1000;
         
         if (decoded.exp < currentTime) {
-          // Token is expired! Clean up.
+          // if expired
           console.log("Token expired on load. Logging out.");
           localStorage.removeItem("token");
           localStorage.removeItem("user");
           setUser(null);
         } else {
-          // Token is valid. Restore session.
           setUser(JSON.parse(storedUser));
         }
       } catch (error) {
-        // If token is garbage/corrupted, log out
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         setUser(null);

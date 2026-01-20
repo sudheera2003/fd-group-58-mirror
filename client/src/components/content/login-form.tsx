@@ -10,8 +10,11 @@ import {
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import api from "@/lib/api";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 export function LoginForm({
   className,
@@ -19,12 +22,29 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const { login } = useAuth();
 
-  const handleSubmit = async () => {
-    
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      // send login data to backend
+      const res = await api.post("/auth/login", { email, password });
+
+      // if success, update global state
+      login(res.data.token, res.data.user);
+
+      toast.success("Login successful!");
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

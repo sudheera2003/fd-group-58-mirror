@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { useRealTime } from "@/hooks/use-real-time";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,9 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -29,6 +32,17 @@ import {
   MoreVerticalIcon,
   UserCircleIcon,
   LogOutIcon,
+  CheckSquareIcon,
+  type LucideIcon,
+  LayoutDashboard,
+  FolderKanban,
+  Users,
+  ClipboardCheck,
+  Briefcase,
+  MapPin,
+  Tags,
+  UserPlus,
+  UserCog,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -41,11 +55,42 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import AddUser from "./content/register";
 
+// data arrays
+
+const navSecondary = [
+  {
+    title: "Venues",
+    url: "/venues",
+    icon: MapPin,
+  },
+  {
+    title: "Event Types",
+    url: "/event-types",
+    icon: Tags,
+  },
+];
+
+const documents = [
+  {
+    name: "Add User",
+    url: "#",
+    icon: UserPlus
+  },
+  {
+    name: "View All Users",
+    url: "/viewUsers",
+    icon: UserCog
+  },
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user: authUser } = useAuth();
+  const location = useLocation();
+  const { user: authUser } = useAuth(); // Use this only for ID and initial state
 
+  // local state for live updates
   const [liveUser, setLiveUser] = React.useState({
     name: authUser?.username || "User",
     email: authUser?.email || "user@example.com",
@@ -53,6 +98,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     role: authUser?.role || "member",
   });
 
+  // fetch fresh data
   const refreshUserData = React.useCallback(async () => {
     if (!authUser?.id) return;
 
@@ -64,8 +110,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         setLiveUser({
           name: data.username,
           email: data.email,
-          avatar: "/avatars/avatar-1.jpg",
-          role: data.role?.name || data.role || "member",
+          avatar: "/avatars/avatar-1.jpg", // You can update this if you add real avatar URLs later
+          role: data.role?.name || data.role || "member", // Handle populated role object or string ID
         });
       }
     } catch (error) {
@@ -78,11 +124,39 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     refreshUserData();
   }, [refreshUserData]);
 
-  // real time listener
+  // real-time listener
   useRealTime("user_update", () => {
     refreshUserData();
   });
 
+  // menues for roels
+  const adminMenu = [
+    { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+    { title: "All Projects", url: "/projects", icon: FolderKanban },
+    { title: "Teams", url: "/team", icon: Users },
+  ];
+
+  const organizerMenu = [
+    { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+    { title: "My Projects", url: "/organizer/projects", icon: Briefcase },
+    { title: "Approvals", url: "/organizer/approvals", icon: ClipboardCheck },
+    { title: "Team", url: "/view-team", icon: Users },
+  ];
+
+  const memberMenu = [
+    { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+    { title: "My Tasks", url: "/member/tasks", icon: CheckSquareIcon },
+    { title: "Team", url: "/view-team", icon: Users },
+  ];
+
+  let currentMenu = memberMenu;
+  const roleName = typeof liveUser.role === 'string' ? liveUser.role : (liveUser.role as any).name;
+  
+  if (roleName === "admin") {
+    currentMenu = adminMenu;
+  } else if (roleName === "organizer") {
+    currentMenu = organizerMenu;
+  }
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -104,16 +178,132 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        
+        <NavMain items={currentMenu} currentPath={location.pathname} />
+        {/* check live role for admin menu */}
+        {roleName === "admin" && (
+          <>
+            <NavDocuments items={documents} />
+            <NavSecondary items={navSecondary} className="mt-auto" />
+          </>
+        )}
       </SidebarContent>
       <SidebarFooter>
-        
+        {/* pass the live user data to the footer */}
         <NavUser user={liveUser} />
       </SidebarFooter>
     </Sidebar>
   );
 }
 
+// sub components
+
+function NavMain({
+  items,
+  currentPath,
+}: {
+  items: {
+    title: string;
+    url: string;
+    icon: LucideIcon;
+  }[];
+  currentPath: string;
+}) {
+  return (
+    <SidebarGroup>
+      <SidebarGroupLabel>Event Management</SidebarGroupLabel>
+      <SidebarGroupContent className="flex flex-col gap-2">
+        <SidebarMenu>
+          {items.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton
+                tooltip={item.title}
+                asChild
+                isActive={currentPath === item.url}
+              >
+                <Link to={item.url}>
+                  {React.createElement(item.icon)}
+                  <span>{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  );
+}
+
+function NavDocuments({
+  items,
+}: {
+  items: {
+    name: string;
+    url: string;
+    icon: LucideIcon;
+  }[];
+}) {
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  return (
+    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+      <SidebarGroupLabel>User Management</SidebarGroupLabel>
+      <SidebarMenu>
+        {items.map((item) => (
+          <SidebarMenuItem key={item.name}>
+            {item.name === "Add User" ? (
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <SidebarMenuButton>
+                  {React.createElement(item.icon)}
+                    <span>{item.name}</span>
+                  </SidebarMenuButton>
+                </DialogTrigger>
+                <AddUser setOpen={setIsDialogOpen} isOpen={isDialogOpen} />
+              </Dialog>
+            ) : (
+              <SidebarMenuButton asChild>
+                <Link to={item.url}>
+                  {React.createElement(item.icon)}
+                  <span>{item.name}</span>
+                </Link>
+              </SidebarMenuButton>
+            )}
+          </SidebarMenuItem>
+        ))}
+      </SidebarMenu>
+    </SidebarGroup>
+  );
+}
+
+function NavSecondary({
+  items,
+  ...props
+}: {
+  items: {
+    title: string;
+    url: string;
+    icon: LucideIcon;
+  }[];
+} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+  return (
+    <SidebarGroup {...props}>
+      <SidebarGroupLabel>Event Form Settings</SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {items.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild>
+                <Link to={item.url}>
+                  {React.createElement(item.icon)}
+                  <span>{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  );
+}
 
 function NavUser({
   user,

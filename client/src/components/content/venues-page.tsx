@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useMemo, useCallback } from "react"; // 1. Import useCallback
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -11,7 +11,7 @@ import {
   type ColumnFiltersState,
   type VisibilityState,
 } from "@tanstack/react-table";
-import { useRealTime } from "@/hooks/use-real-time"; // 2. Import Real-Time Hook
+import { useRealTime } from "@/hooks/use-real-time";
 import { MoreHorizontal, ChevronDown, Plus, MapPin, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,7 +73,7 @@ export default function VenuesPage() {
   const [newLocation, setNewLocation] = useState("");
   const [newCapacity, setNewCapacity] = useState("");
 
-  // --- 3. DEFINE FETCH FUNCTION (Stable Callback) ---
+  // fetch function
   const fetchData = useCallback(async () => {
     try {
       const res = await fetch("http://localhost:5000/api/venues");
@@ -83,16 +83,15 @@ export default function VenuesPage() {
     }
   }, []);
 
-  // --- 4. INITIAL LOAD ---
+  // initial load
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // --- 5. REAL-TIME LISTENER ---
-  // Listen for "venue_update" from backend
+  // real-time listener
   useRealTime("venue_update", fetchData);
 
-  // --- PRE-FILL FORM FOR EDITING ---
+  // pre-fill form for editing
   const handleEdit = (venue: Venue) => {
     setEditingId(venue._id);
     setNewName(venue.name);
@@ -101,7 +100,7 @@ export default function VenuesPage() {
     setIsDialogOpen(true); // Open the shared dialog
   };
 
-  // --- RESET FORM ---
+  // reset form
   const resetForm = () => {
     setEditingId(null);
     setNewName("");
@@ -110,7 +109,7 @@ export default function VenuesPage() {
     setIsDialogOpen(false);
   };
 
-  // --- UNIFIED SUBMIT (CREATE or UPDATE) ---
+  // unified submit (create or update)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {
@@ -122,14 +121,14 @@ export default function VenuesPage() {
     try {
       let res;
       if (editingId) {
-        // UPDATE MODE
+        // update mode
         res = await fetch(`http://localhost:5000/api/venues/${editingId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
       } else {
-        // CREATE MODE
+        // create mode
         res = await fetch("http://localhost:5000/api/venues", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -140,7 +139,6 @@ export default function VenuesPage() {
       if (res.ok) {
         toast.success(editingId ? "Venue updated!" : "Venue created!");
         resetForm();
-        // fetchData(); // Removed manual call, socket handles it
       } else {
         toast.error("Failed to save venue");
       }
@@ -157,7 +155,6 @@ export default function VenuesPage() {
       });
       if (res.ok) {
         toast.success("Venue deleted");
-        // fetchData(); // Removed manual call, socket handles it
       } else {
         toast.error("Failed to delete");
       }
@@ -208,7 +205,7 @@ export default function VenuesPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              {/* EDIT BUTTON */}
+              {/* edit button */}
               <DropdownMenuItem onClick={() => handleEdit(row.original)}>
                 Edit Venue
               </DropdownMenuItem>
@@ -268,7 +265,7 @@ export default function VenuesPage() {
           <p className="text-muted-foreground">Manage your event locations.</p>
         </div>
 
-        {/* SHARED DIALOG FOR CREATE & EDIT */}
+        {/* shared dialog for create & edit */}
         <Dialog
           open={isDialogOpen}
           onOpenChange={(open) => {

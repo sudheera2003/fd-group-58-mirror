@@ -8,19 +8,17 @@ export function SiteHeader() {
   const location = useLocation();
 
   const getMenuTitle = () => {
-    const path = location.pathname.substring(1); // Remove leading slash
+    const path = location.pathname.substring(1);
     if (!path) return "Dashboard";
 
     const titles: Record<string, string> = {
       dashboard: "Dashboard",
-      lifecycle: "Lifecycle",
-      analytics: "Analytics",
       projects: "Projects",
       team: "Team",
       viewUsers: "All Users",
     };
     
-    // Default to capitalizing the path if not in the map
+    // default to capitalizing the path if not in the map
     return titles[path] || "";
   };
 
