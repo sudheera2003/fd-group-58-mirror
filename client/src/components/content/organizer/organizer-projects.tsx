@@ -15,7 +15,7 @@ export default function OrganizerProjects() {
     if (!user?.email) return;
     
     try {
-      // Fetch only projects assigned to this organizer
+      
       const res = await api.get(`/projects/my-projects?email=${user.email}`);
       setProjects(res.data);
     } catch (err) {
@@ -28,7 +28,7 @@ export default function OrganizerProjects() {
     fetchProjects();
   }, [fetchProjects]);
 
-  // If an admin assigns a new project or updates one, this refreshes the list.
+  
   useRealTime("project_update", fetchProjects);
 
   return (
