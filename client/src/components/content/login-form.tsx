@@ -23,7 +23,7 @@ export function LoginForm({
   const [showPassword, setShowPassword] = useState(false);
 
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async () => {
     
   };
   return (
