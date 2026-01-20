@@ -12,7 +12,7 @@ const getProjects = async (req, res) => {
   }
 };
 
-// Get my projects
+// Get projects for a specific organizer
 const getMyProjects = async (req, res) => {
   const { email } = req.query;
   try {
@@ -74,10 +74,10 @@ const getProjectById = async (req, res) => {
   }
 };
 
+// Update a project by ID
 const updateProjectById = async (req, res) => {
   try {
     const { id } = req.params;
-    // We use { new: true } to return the updated document
     const updatedProject = await Project.findByIdAndUpdate(id, req.body, { new: true });
 
     if (!updatedProject) {

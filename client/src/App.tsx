@@ -12,6 +12,9 @@ import ViewTeamPage from "@/components/content/view-team";
 import { ViewUsers } from "@/components/content/view-users";
 import TeamsPage from "@/components/content/team-content";
 import VenuesPage from "@/components/content/admin/venues-page";
+import { ProjectsContent } from "./components/content/admin/projects-content";
+import AdminProjectDetails from "./components/content/admin/project-details-page";
+import OrganizerProjects from "./components/content/organizer/organizer-projects";
 
 export function App() {
   const { user, isLoading } = useAuth();
@@ -74,11 +77,11 @@ export function App() {
 
             {/* Admin Routes */}
             <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+              <Route path="/projects" element={<ProjectsContent />} />
               <Route path="/viewUsers" element={<ViewUsers />} />
               <Route path="/team" element={<TeamsPage />} />
               <Route path="/venues" element={<VenuesPage />} />
-              
-
+              <Route path="/admin/projects/:id" element={<AdminProjectDetails />} />
               {/* Admin Default Redirect */}
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
             </Route>
@@ -86,7 +89,7 @@ export function App() {
             {/* Organizer Routes */}
             <Route
               element={<ProtectedRoute allowedRoles={["organizer"]} />}>
-
+            <Route path="/organizer/projects" element={<OrganizerProjects />} />
             </Route>
             {/* Member Routes */}
             <Route
