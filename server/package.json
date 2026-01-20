@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "test": "cross-env NODE_ENV=test jest --testTimeout=20000",
+    "test:watch": "cross-env NODE_ENV=test jest --watch"
+  },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
@@ -11,5 +15,11 @@
     "nodemailer": "^7.0.12",
     "socket.io": "^4.8.3",
     "websocket": "^1.0.35"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^11.0.1",
+    "supertest": "^7.2.2"
   }
 }
