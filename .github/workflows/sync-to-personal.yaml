@@ -18,6 +18,6 @@ jobs:
         with:
           REMOTE_NAME: "mirror"
           REMOTE: "https://github.com/sudheera2003/fd-group-58-mirror.git"
-          GIT_USERNAME: "Your Name"
+          GIT_USERNAME: "sudheera2003"
           GIT_PASSWORD: ${{ secrets.API_TOKEN_GITHUB }}
           BRANCH: "main"
