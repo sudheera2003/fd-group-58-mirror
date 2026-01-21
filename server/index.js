@@ -1,4 +1,4 @@
-// server/index.js
+
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -21,13 +21,19 @@ const eventTypeRoutes = require("./routes/eventTypeRoutes");
 const roleRoutes = require("./routes/roleRoutes");
 
 const app = express();
-const server = http.createServer(app); // Wrap express with HTTP for WebSockets
+const server = http.createServer(app);
 
-// --- 1. WebSocket Setup ---
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://fd-group-58-mirror.vercel.app",
+];
+
+// WebSocket Setup
 const io = new Server(server, {
   cors: {
-    origin: "*", // Allow connections from your React Client
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
@@ -39,18 +45,20 @@ io.on("connection", (socket) => {
   });
 });
 
-// --- 2. Middleware ---
-app.use(cors());
+// Middleware
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+
 app.use(express.json());
 
-// *** CRITICAL: Attach Socket.io to every Request ***
-// This allows you to use `req.io.emit` in your controllers
 app.use((req, res, next) => {
   req.io = io;
   next();
 });
 
-// --- 3. Routes ---
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/events", eventRoutes);
@@ -61,7 +69,7 @@ app.use("/api/tasks", taskRoutes);
 app.use("/api/venues", venueRoutes);
 app.use("/api/event-types", eventTypeRoutes);
 
-// --- 4. Database Connection (MongoDB) ---
+// Database Connection
 if (process.env.NODE_ENV !== "test") {
   mongoose
     .connect(process.env.MONGO_URI)
@@ -84,7 +92,7 @@ if (process.env.NODE_ENV !== "test") {
 
 module.exports = app;
 
-// --- 5. Start Server ---
+// Start Server
 if (require.main === module) {
   const PORT = process.env.PORT || 5000;
   server.listen(PORT, () => {
