@@ -1,0 +1,23 @@
+name: Sync to Personal Mirror
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  sync-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout University Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to Personal Repository
+        uses: yesolutions/mirror-action@v1
+        with:
+          REMOTE_NAME: "mirror"
+          REMOTE: "https://github.com/sudheera2003/fd-group-58-mirror.git"
+          GIT_USERNAME: "Your Name"
+          GIT_PASSWORD: ${{ secrets.API_TOKEN_GITHUB }}
+          BRANCH: "main"
