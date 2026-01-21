@@ -19,6 +19,8 @@ import ProjectDashboard from "./components/content/organizer/event-dashboard";
 import TaskManagerPage from "./components/content/organizer/task-manager-page";
 import ApprovalsPage from "./components/content/organizer/approvals-page";
 import MemberTasks from "./components/content/member/member-tasks";
+import EventTypesPage from "./components/content/admin/event-types-page";
+import { SocketProvider } from "./context/socket-provider";
 
 export function App() {
   const { user, isLoading } = useAuth();
@@ -33,6 +35,7 @@ export function App() {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <SocketProvider>
       <BrowserRouter>
         <Routes>
           {/*public routes*/}
@@ -86,6 +89,7 @@ export function App() {
               <Route path="/team" element={<TeamsPage />} />
               <Route path="/venues" element={<VenuesPage />} />
               <Route path="/admin/projects/:id" element={<AdminProjectDetails />} />
+              <Route path="/event-types" element={<EventTypesPage />} />
               {/* Admin Default Redirect */}
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
             </Route>
@@ -121,6 +125,7 @@ export function App() {
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
+      </SocketProvider>
       <Toaster position="top-center" richColors />
     </ThemeProvider>
   );
