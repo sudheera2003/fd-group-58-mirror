@@ -102,8 +102,8 @@ export function ViewUsers() {
   const fetchData = React.useCallback(async () => {
     try {
       const [usersRes, rolesRes] = await Promise.all([
-        fetch("http://localhost:5000/api/users"),
-        fetch("http://localhost:5000/api/roles"),
+        fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/users`),
+        fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/roles`),
       ]);
 
       if (!usersRes.ok || !rolesRes.ok) throw new Error("Failed to fetch data");
@@ -133,7 +133,7 @@ export function ViewUsers() {
   // handler
   const handleRoleChange = async (userId: string, newRoleName: string) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${userId}/role`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/users/${userId}/role`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ roleName: newRoleName }),
@@ -155,7 +155,7 @@ export function ViewUsers() {
   const confirmDelete = async () => {
     if (!deleteId) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${deleteId}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/users/${deleteId}`, {
         method: "DELETE",
       });
 

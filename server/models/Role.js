@@ -6,7 +6,7 @@ const RoleSchema = new mongoose.Schema({
     type: String, 
     required: true, 
     unique: true,
-    lowercase: true, // Stores 'Admin' as 'admin'
+    lowercase: true,
     trim: true
   }
 }, { timestamps: true });

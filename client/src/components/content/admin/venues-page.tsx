@@ -76,7 +76,7 @@ export default function VenuesPage() {
   // fetch function
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/venues");
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/venues`);
       if (res.ok) setData(await res.json());
     } catch (e) {
       toast.error("Failed to load venues");
@@ -122,14 +122,14 @@ export default function VenuesPage() {
       let res;
       if (editingId) {
         // update mode
-        res = await fetch(`http://localhost:5000/api/venues/${editingId}`, {
+        res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/venues/${editingId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
       } else {
         // create mode
-        res = await fetch("http://localhost:5000/api/venues", {
+        res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/venues`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -150,7 +150,7 @@ export default function VenuesPage() {
   const confirmDelete = async () => {
     if (!deleteId) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/venues/${deleteId}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/venues/${deleteId}`, {
         method: "DELETE",
       });
       if (res.ok) {
@@ -270,7 +270,7 @@ export default function VenuesPage() {
           open={isDialogOpen}
           onOpenChange={(open) => {
             setIsDialogOpen(open);
-            if (!open) resetForm(); // Clear form when closed manually
+            if (!open) resetForm();
           }}
         >
           <DialogTrigger asChild>

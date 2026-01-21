@@ -68,7 +68,7 @@ export default function AddUser({ setOpen, isOpen }: AddUserProps) {
   useEffect(() => {
     async function fetchRoles() {
       try {
-        const res = await fetch("http://localhost:5000/api/roles");
+        const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/roles`);
         if (res.ok) {
           const data = await res.json();
           setRoles(data);
@@ -91,7 +91,7 @@ export default function AddUser({ setOpen, isOpen }: AddUserProps) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await fetch("http://localhost:5000/api/users/register", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/users/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),

@@ -5,7 +5,7 @@ const Task = require('../models/Task');
 // Get all projects
 const getProjects = async (req, res) => {
   try {
-    const projects = await Project.find().sort({ createdAt: -1 }); // Newest first
+    const projects = await Project.find().sort({ createdAt: -1 });
     res.status(200).json(projects);
   } catch (err) {
     res.status(500).json({ message: err.message });

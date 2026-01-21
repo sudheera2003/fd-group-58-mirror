@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useMemo, useCallback } from "react"; // 1. Import useCallback
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -11,7 +11,7 @@ import {
   type ColumnFiltersState,
   type VisibilityState,
 } from "@tanstack/react-table";
-import { useRealTime } from "@/hooks/use-real-time"; // 2. Import Real-Time Hook
+import { useRealTime } from "@/hooks/use-real-time";
 import { MoreHorizontal, ChevronDown, Plus, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,35 +62,34 @@ export default function EventTypesPage() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-  // UI States
+  // UI states
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [editingId, setEditingId] = useState<string | null>(null); // Track Edit Mode
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Form States
+  // Form states
   const [newName, setNewName] = useState("");
   const [newDesc, setNewDesc] = useState("");
 
-  // --- 3. DEFINE FETCH FUNCTION (Stable Callback) ---
+  // Define fetch function
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/event-types");
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/event-types`);
       if (res.ok) setData(await res.json());
     } catch (e) {
       toast.error("Failed to load types");
     }
   }, []);
 
-  // --- 4. INITIAL LOAD ---
+  // Initial load
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // --- 5. REAL-TIME LISTENER ---
-  // Listen for "eventType_update" from backend
+  // Real-time listener
   useRealTime("eventType_update", fetchData);
 
-  // --- PRE-FILL FORM FOR EDITING ---
+  // pre fill the form
   const handleEdit = (type: EventType) => {
     setEditingId(type._id);
     setNewName(type.name);
@@ -98,7 +97,7 @@ export default function EventTypesPage() {
     setIsDialogOpen(true);
   };
 
-  // --- RESET FORM ---
+  // reset form
   const resetForm = () => {
     setEditingId(null);
     setNewName("");
@@ -106,7 +105,7 @@ export default function EventTypesPage() {
     setIsDialogOpen(false);
   };
 
-  // --- UNIFIED SUBMIT ---
+  // unified submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = { name: newName, description: newDesc };
@@ -114,9 +113,9 @@ export default function EventTypesPage() {
     try {
       let res;
       if (editingId) {
-        // UPDATE MODE
+        // update mode
         res = await fetch(
-          `http://localhost:5000/api/event-types/${editingId}`,
+          `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/event-types/${editingId}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -124,8 +123,8 @@ export default function EventTypesPage() {
           }
         );
       } else {
-        // CREATE MODE
-        res = await fetch("http://localhost:5000/api/event-types", {
+        // create mode
+        res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/event-types`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -137,7 +136,6 @@ export default function EventTypesPage() {
           editingId ? "Event Type updated!" : "Event Type created!"
         );
         resetForm();
-        // fetchData(); // Removed manual call, socket will handle it
       } else {
         toast.error("Failed to save type");
       }
@@ -150,14 +148,13 @@ export default function EventTypesPage() {
     if (!deleteId) return;
     try {
       const res = await fetch(
-        `http://localhost:5000/api/event-types/${deleteId}`,
+        `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/event-types/${deleteId}`,
         {
           method: "DELETE",
         }
       );
       if (res.ok) {
         toast.success("Event Type deleted");
-        // fetchData(); // Removed manual call, socket will handle it
       } else {
         toast.error("Failed to delete");
       }
@@ -202,7 +199,7 @@ export default function EventTypesPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              {/* EDIT BUTTON */}
+              {/* edit button */}
               <DropdownMenuItem onClick={() => handleEdit(row.original)}>
                 Edit Type
               </DropdownMenuItem>

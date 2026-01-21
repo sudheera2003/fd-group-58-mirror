@@ -25,7 +25,7 @@ export default function MemberTasks() {
   const [submitData, setSubmitData] = useState({ note: "", link: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // --- 3. DEFINE FETCH FUNCTION (Stable Callback) ---
+  // define fetch function
   const fetchTasks = useCallback(async () => {
     if (!user?.id) return;
     try {
@@ -33,17 +33,15 @@ export default function MemberTasks() {
       setTasks(res.data);
     } catch (error) { 
       console.error("Failed to load tasks", error);
-      // Optional: toast.error("Failed to load tasks"); 
     }
   }, [user?.id]);
 
-  // --- 4. INITIAL LOAD ---
+  // initial load
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
 
-  // --- 5. REAL-TIME LISTENER ---
-  // When an organizer assigns a task OR status changes, this refreshes the list instantly
+  // real-time listener
   useRealTime("task_update", fetchTasks);
 
   const handleSubmitWork = async (e: React.FormEvent) => {
@@ -55,9 +53,6 @@ export default function MemberTasks() {
       await api.post(`/tasks/${selectedTask}/submit`, submitData);
       toast.success("Work submitted for review!");
       
-      // We don't necessarily need to manually call fetchTasks() here 
-      // because the backend *should* emit "task_update" upon submission.
-      // But keeping it for immediate feedback is fine too.
       fetchTasks(); 
       
       setSelectedTask(null);
@@ -90,7 +85,7 @@ export default function MemberTasks() {
 
     return (
       <div className="space-y-3">
-        {/* Show Rejection Feedback if it exists */}
+        {/* Show rejection feedback if it exists */}
         {task.organizerFeedback && (
           <div className="bg-red-50 border border-red-200 p-2 rounded-md flex items-start gap-2 text-red-700 text-sm">
             <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />

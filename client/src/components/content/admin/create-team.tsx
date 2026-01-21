@@ -79,7 +79,7 @@ export default function CreateTeamForm({ setOpen, teamToEdit, onSuccess }: TeamF
     const delayDebounceFn = setTimeout(async () => {
       if (query.length < 2) { setSearchResults([]); return; }
       try {
-        const res = await fetch(`http://localhost:5000/api/users/search?query=${query}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/users/search?query=${query}`);
         const data = await res.json();
         setSearchResults(data);
       } catch (error) { console.error(error); }
@@ -130,7 +130,7 @@ export default function CreateTeamForm({ setOpen, teamToEdit, onSuccess }: TeamF
         const isOrganizerChanged = teamToEdit.organizer?._id !== organizer._id;
 
         // editing//
-        await api.put(`http://localhost:5000/api/teams/${teamToEdit._id}`, payload);
+        await api.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/teams/${teamToEdit._id}`, payload);
         toast.success("Team updated successfully!");
 
         // triggering success//
@@ -142,7 +142,7 @@ export default function CreateTeamForm({ setOpen, teamToEdit, onSuccess }: TeamF
 
       } else {
         // creating mode//
-        await api.post("http://localhost:5000/api/teams", payload);
+        await api.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/teams`, payload);
         toast.success("Team created successfully!");
         onSuccess?.();
       }

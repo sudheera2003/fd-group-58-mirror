@@ -121,7 +121,7 @@ export default function TaskManagerPage() {
 
   return (
     <div className="space-y-6">
-      {/*  ALERT DIALOG COMPONENT  */}
+      {/*  Alert dialog component  */}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -261,7 +261,7 @@ export default function TaskManagerPage() {
                         <Badge variant="secondary" className={getStatusColor(task.status)}>{task.status}</Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                        {/* UPDATE CLICK HANDLER TO SET ID INSTEAD OF DELETE IMMEDIATELY */}
+                        {/* Update click handler to set ID */}
                         <Button variant="ghost" size="icon" className="hover:text-red-600" onClick={() => setDeleteId(task._id)}>
                             <Trash2 className="h-4 w-4" />
                         </Button>

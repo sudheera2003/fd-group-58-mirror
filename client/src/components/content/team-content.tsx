@@ -86,7 +86,7 @@ export default function TeamsPage() {
   // ---  define fetch function ---
   const fetchTeams = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/teams");
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/teams`);
       const data = await res.json();
       if (res.ok) setTeams(data);
     } catch (error) {
@@ -101,15 +101,14 @@ export default function TeamsPage() {
     fetchTeams();
   }, [fetchTeams]);
 
-  //real-time listener//
-  // Whenever backend emits "team_update", re-fetch the list
+  // real-time listener//
   useRealTime("team_update", fetchTeams);
 
   //delete logic//
   const confirmDelete = async () => {
     if (!deleteId) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/teams/${deleteId}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/teams/${deleteId}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -139,7 +138,7 @@ export default function TeamsPage() {
   };
 
   const handleTeamOperationSuccess = (message?: string) => {
-    fetchTeams(); // Reload 
+    fetchTeams();
     setIsDialogOpen(false); 
 
     if (message) {
