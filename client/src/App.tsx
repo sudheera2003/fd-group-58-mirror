@@ -15,6 +15,10 @@ import VenuesPage from "@/components/content/admin/venues-page";
 import { ProjectsContent } from "./components/content/admin/projects-content";
 import AdminProjectDetails from "./components/content/admin/project-details-page";
 import OrganizerProjects from "./components/content/organizer/organizer-projects";
+import ProjectDashboard from "./components/content/organizer/event-dashboard";
+import TaskManagerPage from "./components/content/organizer/task-manager-page";
+import ApprovalsPage from "./components/content/organizer/approvals-page";
+import MemberTasks from "./components/content/member/member-tasks";
 
 export function App() {
   const { user, isLoading } = useAuth();
@@ -90,10 +94,26 @@ export function App() {
             <Route
               element={<ProtectedRoute allowedRoles={["organizer"]} />}>
             <Route path="/organizer/projects" element={<OrganizerProjects />} />
+            <Route
+                path="/organizer/projects/:id"
+                element={<ProjectDashboard />}
+              />
+              <Route
+                path="/organizer/events/:eventId/tasks"
+                element={<TaskManagerPage />}
+              />
+              <Route path="/organizer/approvals" element={<ApprovalsPage />} />
+              {/* Organizer Default Redirect */}
+              <Route
+                path="/"
+                element={<Navigate to="/organizer/projects" replace />}
+              />
             </Route>
             {/* Member Routes */}
             <Route
               element={<ProtectedRoute allowedRoles={["member"]} />}>
+
+                <Route path="/member/tasks" element={<MemberTasks />} />
 
             </Route>
           </Route>
