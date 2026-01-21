@@ -17,7 +17,7 @@ jobs:
         run: |
           git config --unset-all http.https://github.com/.extraheader
           
-          git config --global user.email "sudheera2003@users.noreply.github.com"
+          git config --global user.email "sudheera2003@gmail.com"
           git config --global user.name "sudheera2003"
           
           git remote add mirror "https://sudheera2003:${{ secrets.API_TOKEN_GITHUB }}@github.com/sudheera2003/fd-group-58-mirror.git"
