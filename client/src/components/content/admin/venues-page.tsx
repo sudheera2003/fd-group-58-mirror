@@ -156,7 +156,9 @@ export default function VenuesPage() {
       if (res.ok) {
         toast.success("Venue deleted");
       } else {
-        toast.error("Failed to delete");
+        const data = await res.json();
+        
+        toast.error(data.message || "Failed to delete venue");
       }
     } catch (error) {
       toast.error("Server error");
