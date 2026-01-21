@@ -26,9 +26,9 @@ const getMyProjects = async (req, res) => {
 
 // Create new project
 const createProject = async (req, res) => {
-  const { name, description, deadline, team } = req.body;
+  const { name, description, deadline, status, team } = req.body;
   try {
-    const newProject = new Project({ name, description, deadline, team });
+    const newProject = new Project({ name, description, deadline, status, team });
     await newProject.save();
 
     req.io.emit("project_update", { action: "create", projectId: newProject._id });
