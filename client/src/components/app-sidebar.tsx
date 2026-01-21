@@ -88,7 +88,7 @@ const documents = [
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation();
-  const { user: authUser } = useAuth(); // Use this only for ID and initial state
+  const { user: authUser } = useAuth();
 
   // local state for live updates
   const [liveUser, setLiveUser] = React.useState({
@@ -103,15 +103,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     if (!authUser?.id) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${authUser.id}`);
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/users/${authUser.id}`);
       const data = await res.json();
 
       if (res.ok) {
         setLiveUser({
           name: data.username,
           email: data.email,
-          avatar: "/avatars/avatar-1.jpg", // You can update this if you add real avatar URLs later
-          role: data.role?.name || data.role || "member", // Handle populated role object or string ID
+          avatar: "/avatars/avatar-1.jpg",
+          role: data.role?.name || data.role || "member",
         });
       }
     } catch (error) {
