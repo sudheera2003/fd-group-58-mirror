@@ -3,21 +3,23 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
-// define the context shape
 const SocketContext = createContext<Socket | null>(null);
 
-// custom hook to use the socket easily in other components
 export const useSocket = () => {
   return useContext(SocketContext);
 };
 
-// the provider component that wraps your app
+// provider component that wraps app
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    // connect to backend URL
-    const newSocket = io("http://localhost:5000");
+    const socketUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+    const newSocket = io(socketUrl, {
+      withCredentials: true,
+      transports: ["polling", "websocket"],
+    });
 
     setSocket(newSocket);
 
