@@ -74,7 +74,9 @@ export default function EventTypesPage() {
   // Define fetch function
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/event-types`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/event-types`,
+      );
       if (res.ok) setData(await res.json());
     } catch (e) {
       toast.error("Failed to load types");
@@ -120,20 +122,23 @@ export default function EventTypesPage() {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
-          }
+          },
         );
       } else {
         // create mode
-        res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/event-types`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
+        res = await fetch(
+          `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/event-types`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          },
+        );
       }
 
       if (res.ok) {
         toast.success(
-          editingId ? "Event Type updated!" : "Event Type created!"
+          editingId ? "Event Type updated!" : "Event Type created!",
         );
         resetForm();
       } else {
@@ -151,12 +156,14 @@ export default function EventTypesPage() {
         `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/event-types/${deleteId}`,
         {
           method: "DELETE",
-        }
+        },
       );
       if (res.ok) {
         toast.success("Event Type deleted");
       } else {
-        toast.error("Failed to delete");
+        const data = await res.json();
+
+        toast.error(data.message || "Failed to delete event type");
       }
     } catch (error) {
       toast.error("Server error");
@@ -214,7 +221,7 @@ export default function EventTypesPage() {
         ),
       },
     ],
-    []
+    [],
   );
 
   const table = useReactTable({
@@ -350,7 +357,7 @@ export default function EventTypesPage() {
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 ))}
@@ -365,7 +372,7 @@ export default function EventTypesPage() {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

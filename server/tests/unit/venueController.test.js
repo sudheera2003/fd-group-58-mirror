@@ -26,7 +26,7 @@ describe("Venue Controller Unit Tests", () => {
 
     expect(res.statusCode).toBe(400); 
     const data = res._getJSONData();
-    expect(data.message).toBe("Cannot delete venue assigned to an event.");
+    expect(data.message).toBe("Venue is assigned to an existing event");
     expect(Venue.findByIdAndDelete).not.toHaveBeenCalled();
   });
 });

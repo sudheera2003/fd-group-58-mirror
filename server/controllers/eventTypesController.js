@@ -1,4 +1,5 @@
 const EventType = require('../models/EventType');
+const Event = require('../models/Event');
 
 const getEventTypes = async (req, res) => {
   try {
@@ -25,6 +26,10 @@ const createEventType = async (req, res) => {
 const deleteEventType = async (req, res) => {
   try {
     const { id } = req.params;
+    const event = await Event.findOne({ type: id });
+    if (event) {
+      return res.status(400).json({ message: "Event Type is assigned to an existing event" });
+    }
     const deleted = await EventType.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ message: "Type not found" });
 
