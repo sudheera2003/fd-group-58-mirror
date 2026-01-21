@@ -29,7 +29,7 @@ const deleteVenue = async (req, res) => {
     const { id } = req.params;
     const event = await Event.findOne({ venue: id });
     if (event) {
-      return res.status(400).json({ message: "Venue is assigned to an existing event" });
+      return res.status(400).json({ message: "Cannot delete venue: Venue is assigned to an existing event" });
     }
     const deleted = await Venue.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ message: "Venue not found" });
