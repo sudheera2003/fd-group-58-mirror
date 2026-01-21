@@ -28,7 +28,7 @@ const deleteEventType = async (req, res) => {
     const { id } = req.params;
     const event = await Event.findOne({ eventType: id });
     if (event) {
-      return res.status(400).json({ message: "Event Type is assigned to an existing event" });
+      return res.status(400).json({ message: "Cannot delete event type: Event type is assigned to an existing event" });
     }
     const deleted = await EventType.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ message: "Type not found" });
