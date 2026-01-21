@@ -1,5 +1,6 @@
 
 const Venue = require('../models/Venue');
+const Event = require('../models/Event');
 
 const getVenues = async (req, res) => {
   try {
@@ -26,6 +27,10 @@ const createVenue = async (req, res) => {
 const deleteVenue = async (req, res) => {
   try {
     const { id } = req.params;
+    const event = await Event.findOne({ venue: id });
+    if (event) {
+      return res.status(400).json({ message: "Cannot delete venue assigned to an event." });
+    }
     const deleted = await Venue.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ message: "Venue not found" });
 
