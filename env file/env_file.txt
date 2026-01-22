@@ -1,0 +1,6 @@
+# .env
+MONGO_URI=mongodb+srv://sudheeradilum_db_user:epjfrcpX2003@eventmanagement.dvdbwe6.mongodb.net/?appName=eventManagement
+PORT=5000
+JWT_SECRET=9ea33c5f59cfb4684b731cc125b6c9d3af53dd3415efb53046f6b06d67128cea4a326554f20c40fad3d29093458514d86ee03a1308cedc5e2bf9a5479947c48b
+EMAIL_USER=loganx460@gmail.com
+EMAIL_PASS=wovfkvxkekhllaeb
